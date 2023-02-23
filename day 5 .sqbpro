@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="day 6 .db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="1075"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="Projects" custom_title="0" dock_id="25" table="4,8:mainProjects"/><dock_state state="000000ff00000000fd000000010000000200000610000003e2fc010000000afb000000160064006f0063006b00420072006f00770073006500310100000000000004330000000000000000fb000000160064006f0063006b00420072006f00770073006500320100000000000006130000000000000000fb000000160064006f0063006b00420072006f00770073006500330100000000000006130000000000000000fb000000160064006f0063006b00420072006f00770073006500340100000000000005cb0000000000000000fb000000180064006f0063006b00420072006f007700730065003100380100000000000005cb0000000000000000fb000000180064006f0063006b00420072006f007700730065003100390100000000000005cb0000000000000000fb000000180064006f0063006b00420072006f007700730065003200320100000000000005cb0000000000000000fb000000180064006f0063006b00420072006f007700730065003200330100000000000005cb0000000000000000fb000000180064006f0063006b00420072006f007700730065003200340100000000000005cb0000000000000000fb000000180064006f0063006b00420072006f00770073006500320035010000000000000610000000fe00ffffff000006100000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="AssignedTo" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort><column index="0" mode="1"/></sort><column_widths><column index="1" value="190"/><column index="2" value="199"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="Projects" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort><column index="2" mode="0"/></sort><column_widths><column index="1" value="125"/><column index="2" value="289"/><column index="3" value="139"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="Scientists" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="140"/><column index="2" value="186"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">CREATE TABLE Scientists (
+  SSN int,
+  Name Char(30) not null,
+  Primary Key (SSN)
+);
+
+CREATE TABLE Projects (
+  Code Char(4),
+  Name Char(50) not null,
+  Hours int,
+  Primary Key (Code)
+);
+
+CREATE TABLE AssignedTo (
+  Scientist int not null,
+  Project char(4) not null,
+  Primary Key (Scientist, Project)
+);
+
+
+INSERT INTO Scientists(SSN,Name) 
+VALUES(123234877,'Michael Rogers'),
+(152934485,'Anand Manikutty'),
+(222364883, 'Carol Smith'),
+(326587417,'Joe Stevens'),
+(332154719,'Mary-Anne Foster'),	
+(332569843,'George ODonnell'),
+(546523478,'John Doe'),
+(631231482,'David Smith'),
+(654873219,'Zacary Efron'),
+(745685214,'Eric Goldsmith'),
+(845657245,'Elizabeth Doe'),
+(845657246,'Kumar Swamy');
+
+
+INSERT INTO Projects ( Code,Name,Hours)
+VALUES ('AeH1','Winds: Studying Bernoullis Principle', 156),
+('AeH2','Aerodynamics and Bridge Design',189),
+('AeH3','Aerodynamics and Gas Mileage', 256),
+('AeH4','Aerodynamics and Ice Hockey', 789),
+('AeH5','Aerodynamics of a Football', 98),
+('AeH6','Aerodynamics of Air Hockey',89),
+('Ast1','A Matter of Time',112),
+('Ast2','A Puzzling Parallax', 299),
+('Ast3','Build Your Own Telescope', 6546),
+('Bte1','Juicy: Extracting Apple Juice with Pectinase', 321),
+('Bte2','A Magnetic Primer Designer', 9684),
+('Bte3','Bacterial Transformation Efficiency', 321),
+('Che1','A Silver-Cleaning Battery', 545),
+('Che2','A Soluble Separation Solution', 778);
+
+
+INSERT INTO AssignedTo ( Scientist, Project)
+VALUES (123234877,'AeH1'),
+(152934485,'AeH3'),
+(222364883,'Ast3'),	   
+(326587417,'Ast3'),
+(332154719,'Bte1'),
+(546523478,'Che1'),
+(631231482,'Ast3'),
+(654873219,'Che1'),
+(745685214,'AeH3'),
+(845657245,'Ast1'),
+(845657246,'Ast2'),
+(332569843,'AeH4');
+
+
+----------------------------------------------------------------------------------------------
+
+-- 6.1 List all the scientists' names, their projects' names, 
+    -- and the hours worked by that scientist on each project, 
+    -- in alphabetical order of project name, then scientist name.
+
+SELECT Scientists.name as Scientist_name, projects.Name as Project_name, Projects.Hours
+from AssignedTo
+JOIN Scientists
+on AssignedTo.Scientist = Scientists.SSN
+JOIN Projects
+on AssignedTo.Project = Projects.Code
+ORDER by Project_name ASC, Scientist_name ASC
+;	
+
+
+-- 6.2 Select the project names which are not assigned yet
+SELECT name 
+from Projects
+left join AssignedTo
+on Projects.Code = AssignedTo.Project
+where AssignedTo.Project is null 
+;
+	
+	
+	
+	</sql><current_tab id="0"/></tab_sql></sqlb_project>

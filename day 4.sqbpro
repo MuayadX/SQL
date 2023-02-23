@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="day 44.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="1147"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="MovieTheaters" custom_title="0" dock_id="30" table="4,13:mainMovieTheaters"/><dock_state state="000000ff00000000fd000000010000000200000613000003e2fc010000000ffb000000160064006f0063006b00420072006f00770073006500310100000000000004330000000000000000fb000000160064006f0063006b00420072006f00770073006500320100000000000006130000000000000000fb000000160064006f0063006b00420072006f00770073006500330100000000000006130000000000000000fb000000160064006f0063006b00420072006f00770073006500340100000000000005cb0000000000000000fb000000180064006f0063006b00420072006f007700730065003100380100000000000005cb0000000000000000fb000000180064006f0063006b00420072006f007700730065003100390100000000000005cb0000000000000000fb000000180064006f0063006b00420072006f007700730065003200320100000000000005cb0000000000000000fb000000180064006f0063006b00420072006f007700730065003200330100000000000005cb0000000000000000fb000000180064006f0063006b00420072006f007700730065003200340100000000000005cb0000000000000000fb000000180064006f0063006b00420072006f007700730065003200350100000000000006100000000000000000fb000000180064006f0063006b00420072006f007700730065003200360100000000000006130000000000000000fb000000180064006f0063006b00420072006f007700730065003200370100000000ffffffff0000000000000000fb000000180064006f0063006b00420072006f007700730065003200380100000000000006130000000000000000fb000000180064006f0063006b00420072006f007700730065003200390100000000000006130000000000000000fb000000180064006f0063006b00420072006f007700730065003300300100000000ffffffff000000fe00ffffff000006130000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1">CREATE TABLE IF NOT EXISTS Movies (
+  Code INTEGER,
+  Title VARCHAR(255) NOT NULL,
+  Rating VARCHAR(255),
+  PRIMARY KEY (Code)
+);
+
+CREATE TABLE IF NOT EXISTS MovieTheaters (
+  Code INTEGER,
+  Name VARCHAR(255) NOT NULL,
+  Movie INTEGER,
+  PRIMARY KEY (Code)
+  );
+
+INSERT INTO Movies(Code,Title,Rating) VALUES(1,'Citizen Kane','PG');
+INSERT INTO Movies(Code,Title,Rating) VALUES(2,'Singin'' in the Rain','G');
+INSERT INTO Movies(Code,Title,Rating) VALUES(3,'The Wizard of Oz','G');
+INSERT INTO Movies(Code,Title,Rating) VALUES(4,'The Quiet Man',NULL);
+INSERT INTO Movies(Code,Title,Rating) VALUES(5,'North by Northwest',NULL);
+INSERT INTO Movies(Code,Title,Rating) VALUES(6,'The Last Tango in Paris','NC-17');
+INSERT INTO Movies(Code,Title,Rating) VALUES(7,'Some Like it Hot','PG-13');
+INSERT INTO Movies(Code,Title,Rating) VALUES(8,'A Night at the Opera',NULL);
+
+
+INSERT INTO MovieTheaters(Code,Name,Movie) VALUES(1,'Odeon',5);
+INSERT INTO MovieTheaters(Code,Name,Movie) VALUES(2,'Imperial',1);
+INSERT INTO MovieTheaters(Code,Name,Movie) VALUES(3,'Majestic',NULL);
+INSERT INTO MovieTheaters(Code,Name,Movie) VALUES(4,'Royale',6);
+INSERT INTO MovieTheaters(Code,Name,Movie) VALUES(5,'Paraiso',3);
+INSERT INTO MovieTheaters(Code,Name,Movie) VALUES(6,'Nickelodeon',NULL);
+
+
+-----------------------------------------------------------------------------------------------------
+
+
+-- 4.1 Select the title of all movies.
+select Title 
+from Movies
+;
+
+
+-- 4.2 Show all the distinct ratings in the database.
+SELECT DISTINCT Rating
+from Movies
+;
+
+
+-- 4.3 Show all unrated movies.
+SELECT * 
+from Movies
+where Rating is null 
+;
+
+
+-- 4.4 Select all movie theaters that are not currently showing a movie.
+SELECT Name
+from MovieTheaters
+where Movie is null 
+;
+
+-- 4.5 Select all data from all movie theaters and, additionally, 
+--the data from the movie that is being shown in the theater (if one is being shown).
+SELECT * 
+from MovieTheaters
+left join Movies
+on MovieTheaters.Movie = Movies.Code
+;
+
+
+-- 4.6 Select all data from all movies and, 
+--if that movie is being shown in a theater, show the data from the theater.
+SELECT *
+from Movies
+left join MovieTheaters
+on Movies.Code = MovieTheaters.Movie
+;
+
+
+-- 4.7 Show the titles of movies not currently being shown in any theaters.
+SELECT *
+from Movies
+left join MovieTheaters
+on Movies.Code = MovieTheaters.Movie
+where  MovieTheaters.Code is null
+;
+
+
+-- 4.8 Add the unrated movie &quot;One, Two, Three&quot;.
+INSERT INTO Movies(Code,Title,Rating) VALUES(9,'One, Two, Three',NULL);
+
+
+-- 4.9 Set the rating of all unrated movies to &quot;G&quot;.
+update Movies
+set Rating = 'G' 
+where Rating is null 
+;
+
+
+-- 4.10 Remove movie theaters projecting movies rated &quot;NC-17&quot;.
+SELECT *
+from MovieTheaters
+where movie in ( SELECT Movies.code from Movies where Rating = &quot;NC-17&quot;) 
+;</sql><current_tab id="0"/></tab_sql></sqlb_project>
