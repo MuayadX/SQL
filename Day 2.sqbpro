@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="Day 2.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="1147"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="Departments" custom_title="0" dock_id="4" table="4,11:mainDepartments"/><dock_state state="000000ff00000000fd000000010000000200000613000003e2fc0100000004fb000000160064006f0063006b00420072006f00770073006500310100000000000004330000000000000000fb000000160064006f0063006b00420072006f00770073006500320100000000000006130000000000000000fb000000160064006f0063006b00420072006f00770073006500330100000000000006130000000000000000fb000000160064006f0063006b00420072006f0077007300650034010000000000000613000000fe00ffffff000006130000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="Departments" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="40"/><column index="2" value="105"/><column index="3" value="95"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="Employees" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort><column index="2" mode="0"/></sort><column_widths><column index="1" value="137"/><column index="2" value="60"/><column index="3" value="68"/><column index="4" value="81"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">
+-- 2.1 Select the last name of all employees.
+SELECT LastName
+from employees 
+;
+
+
+-- 2.2 Select the last name of all employees, without duplicates.
+SELECT DISTINCT LastName
+from employees 
+;
+
+
+-- 2.3 Select all the data of employees whose last name is &quot;Smith&quot;.
+SELECT * 
+from Employees
+where LastName = &quot;Smith&quot;
+;
+
+
+-- 2.4 Select all the data of employees whose last name is &quot;Smith&quot; or &quot;Doe&quot;.
+SELECT * 
+from Employees
+where LastName = &quot;Smith&quot;
+or  LastName = &quot;Doe&quot;
+;
+
+
+-- 2.5 Select all the data of employees that work in department 14.
+SELECT * 
+from Employees
+where Department = 14
+;
+
+
+-- 2.6 Select all the data of employees that work in department 37 or department 77.
+SELECT * 
+from Employees
+where Department = 37
+or Department = 77
+;
+
+
+-- 2.7 Select all the data of employees whose last name begins with an &quot;S&quot;.
+SELECT * 
+from Employees
+where LastName like 'S%'
+;
+
+-- 2.8 Select the sum of all the departments' budgets.
+SELECT sum(budget)
+from Departments
+;
+
+
+-- 2.9 Select the number of employees in each department 
+--(you only need to show the department code and the number of employees).
+SELECT DISTINCT Department, count(Department) as noe
+from Employees
+group by Department
+;
+
+
+-- 2.10 Select all the data of employees, including each employee's department's data.
+SELECT *, Departments.Name
+from Employees
+JOIN Departments
+on Employees.Department = Departments.Code
+;
+
+
+
+-- 2.11 Select the name and last name of each employee, along with the name and budget of the employee's department.
+SELECT Employees.Name, Employees.LastName, Departments.Name, Departments.Budget
+from Employees
+JOIN Departments
+on Employees.Department = Departments.Code
+;
+
+
+-- 2.12 Select the name and last name of employees working for departments with a budget greater than $60,000.
+SELECT Employees.Name, Employees.LastName, Departments.Name, Departments.Budget
+from Employees
+JOIN Departments
+on Employees.Department = Departments.Code
+where Budget &gt; 60000
+;
+
+
+-- 2.13 Select the departments with a budget larger than the average budget of all the departments.
+SELECT name, Budget
+from Departments
+where  Budget &gt; ( 
+SELECT avg(Budget)
+from Departments
+)
+;
+
+
+-- 2.14 Select the names of departments with more than two employees.
+SELECT Departments.Name as department_name, count(SSN) as number_of_emplyee
+from Departments
+JOIN Employees
+on Employees.Department = Departments.Code
+GROUP by Department
+HAVING number_of_emplyee &gt; 2
+;
+
+
+-- 2.15 Select the name and last name of employees working for the two departments with lowest budget.
+SELECT Employees.Name, LastName, Budget
+from Employees
+JOIN Departments
+on Employees.Department = Departments.Code
+ORDER by Budget
+
+;
+
+
+WHERE Budget = (SELECT min(Budget) from Departments)
+or Budget &gt; (SELECT min(Budget) from Departments)
+
+
+SELECT Employees.Name, LastName, Budget, dense_rank() OVER(ORDER BY Budget) rank
+from Employees
+JOIN Departments
+on Employees.Department = Departments.Code
+
+;
+
+SELECT name, Department, (SELECT dense_rank() OVER(ORDER BY Department) from Employees) as rank
+from Employees
+ORDER by depa
+;
+
+
+
+-- 2.16  Add a new department called &quot;Quality Assurance&quot;, with a budget of $40,000 and departmental code 11. 
+-- And Add an employee called &quot;Mary Moore&quot; in that department, with SSN 847-21-9811.
+INSERT into Departments (code, name, Budget) values (11, &quot;Quality Assurance&quot;, 40000);
+INSERT into Employees (SSN, Name, LastName, Department) values ( 847219811, 'Mary', 'Moore', 11);
+
+
+-- 2.17 Reduce the budget of all departments by 10%.
+update departments 
+set budget = budget * 9/10 
+;
+
+
+-- 2.18 Reassign all employees from the Research department (code 77) to the IT department (code 14).
+UPDATE employees 
+set department = 14
+where department = 77
+;
+
+
+-- 2.19 Delete from the table all employees in the IT department (code 14).
+DELETE from employees
+where department = 14
+;
+
+
+-- 2.20 Delete from the table all employees who work in departments with a budget greater than or equal to $60,000.
+DELETE
+from employees 
+where department in (SELECT code from departments where budget &gt;= 60000) 
+;
+
+
+-- 2.21 Delete from the table all employees.
+DELETE 
+from employees
+; 
+
+
+
+INSERT INTO Employees(SSN,Name,LastName,Department) VALUES('123234877','Michael','Rogers',14);
+INSERT INTO Employees(SSN,Name,LastName,Department) VALUES('152934485','Anand','Manikutty',14);
+INSERT INTO Employees(SSN,Name,LastName,Department) VALUES('222364883','Carol','Smith',37);
+INSERT INTO Employees(SSN,Name,LastName,Department) VALUES('326587417','Joe','Stevens',37);
+INSERT INTO Employees(SSN,Name,LastName,Department) VALUES('332154719','Mary-Anne','Foster',14);
+INSERT INTO Employees(SSN,Name,LastName,Department) VALUES('332569843','George','ODonnell',77);
+INSERT INTO Employees(SSN,Name,LastName,Department) VALUES('546523478','John','Doe',59);
+INSERT INTO Employees(SSN,Name,LastName,Department) VALUES('631231482','David','Smith',77);
+INSERT INTO Employees(SSN,Name,LastName,Department) VALUES('654873219','Zacary','Efron',59);
+INSERT INTO Employees(SSN,Name,LastName,Department) VALUES('745685214','Eric','Goldsmith',59);
+INSERT INTO Employees(SSN,Name,LastName,Department) VALUES('845657245','Elizabeth','Doe',14);
+INSERT INTO Employees(SSN,Name,LastName,Department) VALUES('845657246','Kumar','Swamy',14);
+
+
+
+</sql><current_tab id="0"/></tab_sql></sqlb_project>
